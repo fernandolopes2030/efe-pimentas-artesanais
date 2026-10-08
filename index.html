@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EFE Pimentas Artesanais — Loja + Administração</title>
+<style>
+:root{--red:#b91c1c;--dark:#24150f;--cream:#fff9ed;--green:#15803d;--line:#eadfd2}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--dark)}
+header{background:#fff;padding:15px 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;box-shadow:0 2px 15px #0001}.logo{font-weight:900;font-size:21px}.logo span{color:var(--red)}
+button,.btn{border:0;border-radius:9px;padding:11px 16px;font-weight:800;cursor:pointer}.primary{background:var(--red);color:#fff}.dark{background:var(--dark);color:#fff}.light{background:#fff;border:1px solid var(--line)}
+main{max-width:1150px;margin:auto;padding:30px 18px}.hero{background:linear-gradient(135deg,#fff2cf,#ffd9b2);padding:45px;border-radius:25px;margin-bottom:35px}.hero h1{font-size:clamp(38px,6vw,65px);line-height:1;margin:10px 0}.hero em{color:var(--red);font-style:normal}.hero p{font-size:18px;max-width:650px}.section{margin:35px 0}.title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 25px #0000000d;border:1px solid #eee}.photo{height:170px;background:#ffe5bd;display:flex;align-items:center;justify-content:center;font-size:65px}.card img{width:100%;height:170px;object-fit:cover}.info{padding:16px}.price{color:var(--red);font-weight:900;font-size:20px;margin:9px 0}.admin{display:none}.admin.active{display:block}.store.hidden{display:none}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:20px}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field input,.field textarea,.field select{padding:11px;border:1px solid #d9cbbb;border-radius:8px;font:inherit}.actions{display:flex;gap:8px;flex-wrap:wrap}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:11px;border-bottom:1px solid var(--line)}.login{max-width:430px;margin:60px auto}.muted{color:#77675e;font-size:14px}.notice{padding:12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;color:#166534;margin-bottom:15px}footer{background:var(--dark);color:#fff;padding:35px 6%;margin-top:40px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.hero{padding:30px}.table{font-size:13px}}@media(max-width:500px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🌶️ EFE <span>PIMENTAS ARTESANAIS</span></div>
+  <div class="actions">
+    <button class="light" onclick="showStore()">Loja</button>
+    <button class="dark" onclick="openAdmin()">Administração</button>
+  </div>
+</header>
+
+<div id="store" class="store">
+<main>
+<section class="hero"><div class="muted">ARTESANAL • DESDE 2015</div><h1>O sabor que <em>acende</em> seu prato.</h1><p>Pimentas artesanais para deixar cada refeição mais especial. Escolha seus produtos e faça seu pedido.</p><button class="primary" onclick="document.getElementById('produtos').scrollIntoView()">Ver produtos 🌶️</button></section>
+<section class="section" id="produtos"><div class="title"><h2>Nossos produtos</h2><span id="count" class="muted"></span></div><div id="productGrid" class="grid"></div></section>
+</main>
+<footer><b>EFE PIMENTAS ARTESANAIS</b><br><span class="muted">Sabor artesanal desde 2015.</span></footer>
+</div>
+
+<div id="admin" class="admin">
+<main>
+<div id="loginBox" class="panel login">
+<h2>🔐 Painel administrativo</h2><p class="muted">Acesso de demonstração. Troque a senha no código antes de publicar.</p>
+<input id="password" type="password" placeholder="Senha" style="width:100%;padding:12px;border:1px solid #d9cbbb;border-radius:8px;margin:10px 0">
+<button class="primary" onclick="login()">Entrar</button><p id="loginMsg" style="color:#b91c1c"></p>
+</div>
+<div id="dashboard" style="display:none">
+<div class="title"><div><h2>Painel EFE</h2><p class="muted">Gerencie seus produtos sem alterar o código.</p></div><button class="light" onclick="showStore()">← Voltar para loja</button></div>
+<div class="panel">
+<h3 id="formTitle">Cadastrar produto</h3>
+<div class="formgrid">
+<div class="field"><label>Nome</label><input id="name" placeholder="Ex.: Pimenta Tradicional"></div>
+<div class="field"><label>Preço (R$)</label><input id="price" type="number" step="0.01" placeholder="18.90"></div>
+<div class="field"><label>Categoria</label><input id="category" placeholder="Pimentas, Molhos, Kits..."></div>
+<div class="field"><label>Emoji / imagem</label><input id="image" placeholder="🌶️ ou URL de uma imagem"></div>
+<div class="field full"><label>Descrição</label><textarea id="description" rows="3" placeholder="Descrição do produto"></textarea></div>
+</div><br><div class="actions"><button class="primary" onclick="saveProduct()">Salvar produto</button><button class="light" onclick="clearForm()">Limpar</button></div>
+</div>
+<div class="panel"><h3>Produtos cadastrados</h3><div style="overflow:auto"><table class="table"><thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Ações</th></tr></thead><tbody id="productTable"></tbody></table></div></div>
+<div class="panel"><h3>Configurações da loja</h3><div class="formgrid">
+<div class="field"><label>WhatsApp</label><input id="whatsapp" placeholder="5511999999999"></div>
+<div class="field"><label>Instagram</label><input id="instagram" placeholder="@seuinstagram"></div>
+<div class="field full"><label>Mensagem de destaque</label><input id="headline" placeholder="O sabor que acende seu prato."></div>
+</div><br><button class="primary" onclick="saveSettings()">Salvar configurações</button>
+</div>
+<div class="notice">Os dados desta versão são salvos no <b>navegador deste aparelho</b>. Para uma loja online real com dados compartilhados entre aparelhos, pagamentos e pedidos, será necessário conectar um banco de dados/servidor.</div>
+</div>
+</main>
+</div>
+
+<script>
+const ADMIN_PASSWORD="1234"; // ALTERE ESTA SENHA
+let products=JSON.parse(localStorage.getItem("efe_products")||"null")||[
+{id:1,name:"Pimenta Tradicional",price:18.90,category:"Pimentas",image:"🌶️",description:"Picância equilibrada para o dia a dia."},
+{id:2,name:"Pimenta Extra Forte",price:21.90,category:"Pimentas",image:"🔥",description:"Para quem gosta de intensidade e personalidade."},
+{id:3,name:"Pimenta Verde",price:19.90,category:"Pimentas",image:"🌶️",description:"Aromática, saborosa e perfeita para molhos."},
+{id:4,name:"Molho Especial EFE",price:24.90,category:"Molhos",image:"🫙",description:"Receita artesanal com sabor exclusivo."}
+];
+let editingId=null;
+function persist(){localStorage.setItem("efe_products",JSON.stringify(products));render()}
+function money(v){return Number(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function render(){
+document.getElementById("count").textContent=products.length+" produto(s)";
+document.getElementById("productGrid").innerHTML=products.map(p=>`<article class="card"><div class="photo">${p.image?.startsWith("http")?`<img src="${p.image}" alt="">`:p.image||"🌶️"}</div><div class="info"><small class="muted">${p.category||""}</small><h3>${p.name}</h3><p class="muted">${p.description||""}</p><div class="price">${money(p.price)}</div><button class="dark" style="width:100%" onclick="order('${p.name.replace(/'/g,"\\'")}')">Pedir pelo WhatsApp</button></div></article>`).join("");
+document.getElementById("productTable").innerHTML=products.map(p=>`<tr><td><b>${p.name}</b></td><td>${p.category||""}</td><td>${money(p.price)}</td><td><button class="light" onclick="editProduct(${p.id})">Editar</button> <button class="light" onclick="deleteProduct(${p.id})">Excluir</button></td></tr>`).join("");
+}
+function showStore(){document.getElementById("store").classList.remove("hidden");document.getElementById("admin").classList.remove("active");window.scrollTo(0,0)}
+function openAdmin(){document.getElementById("store").classList.add("hidden");document.getElementById("admin").classList.add("active");window.scrollTo(0,0)}
+function login(){if(document.getElementById("password").value===ADMIN_PASSWORD){document.getElementById("loginBox").style.display="none";document.getElementById("dashboard").style.display="block";loadSettings();render()}else document.getElementById("loginMsg").textContent="Senha incorreta."}
+function clearForm(){editingId=null;document.getElementById("formTitle").textContent="Cadastrar produto";["name","price","category","image","description"].forEach(id=>document.getElementById(id).value="")}
+function saveProduct(){
+let name=document.getElementById("name").value.trim(),price=parseFloat(document.getElementById("price").value);
+if(!name||isNaN(price)){alert("Informe nome e preço.");return}
+let data={name,price,category:document.getElementById("category").value.trim(),image:document.getElementById("image").value.trim()||"🌶️",description:document.getElementById("description").value.trim()};
+if(editingId){let i=products.findIndex(p=>p.id===editingId);products[i]={...products[i],...data}}else products.push({id:Date.now(),...data});
+persist();clearForm();alert("Produto salvo com sucesso!")}
+function editProduct(id){let p=products.find(x=>x.id===id);editingId=id;document.getElementById("formTitle").textContent="Editar produto";["name","price","category","image","description"].forEach((id,i)=>document.getElementById(id).value=[p.name,p.price,p.category,p.image,p.description][i]);window.scrollTo({top:0,behavior:"smooth"})}
+function deleteProduct(id){if(confirm("Excluir este produto?")){products=products.filter(p=>p.id!==id);persist()}}
+function order(name){let s=JSON.parse(localStorage.getItem("efe_settings")||"{}");let phone=s.whatsapp||"";let msg=encodeURIComponent("Olá! Quero fazer um pedido da EFE Pimentas Artesanais: "+name);if(phone)window.open("https://wa.me/"+phone+"?text="+msg,"_blank");else alert("Cadastre o WhatsApp no painel administrativo.")}
+function saveSettings(){let s={whatsapp:document.getElementById("whatsapp").value.replace(/\D/g,""),instagram:document.getElementById("instagram").value,headline:document.getElementById("headline").value};localStorage.setItem("efe_settings",JSON.stringify(s));alert("Configurações salvas!")}
+function loadSettings(){let s=JSON.parse(localStorage.getItem("efe_settings")||"{}");document.getElementById("whatsapp").value=s.whatsapp||"";document.getElementById("instagram").value=s.instagram||"";document.getElementById("headline").value=s.headline||""}
+render();
+</script>
+</body></html>
